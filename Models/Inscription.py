@@ -1,4 +1,4 @@
 from .AbstractModel improt AbstractModel
 
-class Inscription(AbstractModel)
+class Inscription(AbstractModel):
     pass

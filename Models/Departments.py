@@ -1,4 +1,4 @@
 from .AbstractModel improt AbstractModel
 
-class Departments(AbstractModel)
+class Departments(AbstractModel):
     pass

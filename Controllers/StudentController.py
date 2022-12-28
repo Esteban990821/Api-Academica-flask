@@ -1,7 +1,7 @@
 from Models.Students import Students
 
 class StudentController():
-    def __init__():
+    def __init__(self):
         print("Creando Controlador de estudiante")
    
     def index(self):
@@ -36,4 +36,4 @@ class StudentController():
 
     def delete(self,id):
         print("Elimiando estudiante con id ",id)
-        return{"deleted_count":1}
+        return{"deleted_count":id}
