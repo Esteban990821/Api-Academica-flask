@@ -1,39 +1,27 @@
 from Models.Students import Students
-
+from Repositories.StudentRep import StudentRep
 class StudentController():
     def __init__(self):
-        print("Creando Controlador de estudiante")
+        self.studentRep = StudentRep()
    
     def index(self):
-        print("Listar todos los estudiantes")
-        oneStudent = {
-            "_id":"1",
-            "cedula":"123456",
-            "nombre":"Esteban",
-            "apellido":"Rodriquez"
-        }
-        return [oneStudent]
+        return self.studentRep.findAll()
+        
 
     def create(self,studentInfo):
-        print("Crear un estudiante")
-        theStudent = Students(studentInfo)
-        return theStudent.__dict__
+        newStudent=Students(studentInfo)
+        return self.studentRep.save(newStudent)
 
     def show(self,id):
-        print("Mostrando un estudiante con id ",id)
-        theStudent = {
-            "_id":id,
-            "cedula":"123456",
-            "nombre":"Esteban",
-            "apellido":"Rodriquez"
-        }
-        return theStudent
-
-    def update(self,id,studentInfo):
-        print("Actualizando estudiante con id ",id)
-        theStudent = Students(studentInfo)
+        theStudent =Students(self.studentRep.findById(id))
         return theStudent.__dict__
 
+    def update(self,id,studentInfo):
+        currentStudent = Students(self.studentRep.findById(id))
+        currentStudent.cedula = studentInfo["cedula"]
+        currentStudent.nombre = studentInfo["nombre"]
+        currentStudent.apellido = studentInfo["apellido"]
+        return self.studentRep.save(currentStudent)
+
     def delete(self,id):
-        print("Elimiando estudiante con id ",id)
-        return{"deleted_count":id}
+        return self.studentRep.delete(id)
