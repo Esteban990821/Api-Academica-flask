@@ -8,6 +8,7 @@ from waitress import serve
 from Controllers.StudentController import StudentController
 from Controllers.CourseController import CourseController
 from Controllers.DepartmentController import DepartmentController
+from Controllers.InscriptionController import InscriptionController
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -15,6 +16,7 @@ cors = CORS(app)
 myControllerStudents = StudentController()
 myControllerCourse = CourseController()
 myControllerDepartment = DepartmentController()
+myControllerInscription = InscriptionController()
 
 @app.route("/",methods=['GET'])
 def test():
@@ -114,6 +116,35 @@ def deleteCourse(id):
 @app.route("/course/<string:id>/departamento/<string:idDepartment>",methods=['PUT'])
 def asignarDepartamentoAMateria(id,idDepartment):
     json = myControllerCourse.assignmentDepartment(id,idDepartment)
+    return jsonify(json)
+############################################################################################
+
+############################# Rutas Inscripciones relacion [n:n] #################################
+@app.route("/inscripciones",methods=['GET'])
+def getInscriptions():
+    json=myControllerInscription.index()
+    return jsonify(json)
+
+@app.route("/inscripcion/<string:id>",methods=['GET'])
+def getInscription(id):
+    json=myControllerInscription.show(id)
+    return jsonify(json)
+
+@app.route("/inscripcion/estudiante/<string:id_estudiante>/materia/<string:id_materia>",methods=['POST'])
+def createInscription(id_estudiante,id_materia):
+    data = request.get_json()
+    json=myControllerInscription.create(data,id_estudiante,id_materia)
+    return jsonify(json)
+
+@app.route("/inscripciones/<string:id_inscripcion>/estudiante/<string:id_estudiante>/materia/<string:id_materia>",methods=['PUT'])
+def updateInscripcion(id_inscripcion,id_estudiante,id_materia):
+    data = request.get_json()
+    json=myControllerInscription.update(id_inscripcion,data,id_estudiante,id_materia)
+    return jsonify(json)
+
+@app.route("/inscripcion/<string:id>",methods=['DELETE'])
+def deleteInscription(id):
+    json=myControllerInscription.delete(id)
     return jsonify(json)
 ############################################################################################
 
