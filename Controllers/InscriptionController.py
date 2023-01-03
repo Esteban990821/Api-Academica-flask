@@ -41,6 +41,17 @@ class InscriptionController():
     def delete(self,id):
         return self.inscriptionRep.delete(id)
 
+    #retorna un diccionario con la lista de inscritos en una materia 
+    def listInscribedInCourse(self,idMateria):
+        return self.inscriptionRep.getListInscribedInCourse(idMateria)
+
+    #retorna un diccionario con la mayor nota por cada curso 
+    def greaterValueForCourse(self):
+        return self.inscriptionRep.getGreaterValueForCourse()
+
+    #retorna un diccionario con el promedio de cada materia
+    def AvgCourse(self,id):
+        return self.inscriptionRep.getAvgCourse(id)
 
 
 

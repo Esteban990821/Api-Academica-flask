@@ -5,5 +5,39 @@ from Models.Inscription import Inscription
 from bson.objectid import ObjectId
 
 class InscriptionRep(InterfaceRep[Inscription]):
-    pass
-     
+    def getListInscribedInCourse(self,idMateria):
+        Query = {'materia.$id': ObjectId("63b369a6d571c17243d1088c")}
+        return self.query(Query)
+
+    def getGreaterValueForCourse(self):
+        query = {
+            "$group":{
+                "_id": "$materia",
+                "max": {
+                    "$max": "$nota_final"
+                },
+                "doc": {
+                    "$first": "$$ROOT"
+                }
+                
+            }
+        }
+        pipelino=[query]
+        return self.queryAggregation(pipelino)
+
+    def getAvgCourse(self,idMateria):
+        query1 = {
+            "$match":{"materia.$id":ObjectId(idMateria)}            
+        }
+        query2 = {
+            "$group":{
+                "_id": "$materia",
+                "promedio": {
+                    "$avg": "$nota_final"
+                }
+                
+            }
+        }
+        pipelino=[query1,query2]
+        return self.queryAggregation(pipelino)
+    

@@ -146,6 +146,23 @@ def updateInscripcion(id_inscripcion,id_estudiante,id_materia):
 def deleteInscription(id):
     json=myControllerInscription.delete(id)
     return jsonify(json)
+
+@app.route("/inscripcion/materias/<string:idMaterias>",methods=['GET'])
+def getListInscribedInCourse(idMaterias):
+    json=myControllerInscription.listInscribedInCourse(idMaterias)
+    return jsonify(json)
+
+@app.route("/inscripcion/nota_mayor_por_curso",methods=['GET'])
+def getGreaterValue():
+    json=myControllerInscription.greaterValueForCourse()
+    return jsonify(json)
+
+@app.route("/inscripcion/promedio_por_materia/<string:idMaterias>",methods=['GET'])
+def getAVGCourse(idMaterias):
+    json=myControllerInscription.AvgCourse(idMaterias)
+    return jsonify(json)
+
+
 ############################################################################################
 
 def loadFileConfig():
