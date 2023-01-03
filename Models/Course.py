@@ -1,4 +1,4 @@
-from .AbstractModel improt AbstractModel
+from .AbstractModel import AbstractModel
 
 class Course(AbstractModel):
     pass

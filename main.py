@@ -6,11 +6,15 @@ from flask_cors import CORS
 import json
 from waitress import serve
 from Controllers.StudentController import StudentController
+from Controllers.CourseController import CourseController
+from Controllers.DepartmentController import DepartmentController
 
 app = Flask(__name__)
 cors = CORS(app)
 
 myControllerStudents = StudentController()
+myControllerCourse = CourseController()
+myControllerDepartment = DepartmentController()
 
 @app.route("/",methods=['GET'])
 def test():
@@ -18,6 +22,7 @@ def test():
     json["message"]="Server running ..."
     return jsonify(json)
 
+#################################### Rutas Estudiantes #####################################
 @app.route("/students",methods=['GET'])
 def getEstudiantes():
     json = myControllerStudents.index()
@@ -45,6 +50,72 @@ def modificarEstudiante(id):
 def eliminarEstudiante(id):
     json=myControllerStudents.delete(id)
     return jsonify(json)
+############################################################################################
+
+############################# Rutas Departamentos ##########################################
+@app.route("/department",methods=['GET'])
+def getDepartments():
+    json = myControllerDepartment.index()
+    return jsonify(json)
+
+@app.route("/department",methods=['POST'])
+def createDepartment():
+    data = request.get_json()
+    json = myControllerDepartment.create(data)
+    return jsonify(json)
+
+@app.route("/department/<string:id>",methods=['GET'])
+def getDepartment(id):
+    json=myControllerDepartment.show(id)
+    return jsonify(json)
+
+@app.route("/department/<string:id>",methods=['PUT'])
+def updateDepartment(id):
+    data = request.get_json()
+    json=myControllerDepartment.update(id,data)
+    return jsonify(json)
+
+@app.route("/department/<string:id>",methods=['DELETE'])
+def deleteDepartment(id):
+    json=myControllerDepartment.delete(id)
+    return jsonify(json)
+############################################################################################
+
+####################################### Rutas Materias #####################################
+@app.route("/course",methods=['GET'])
+def getCourses():
+    json = myControllerCourse.index()
+    return jsonify(json)
+
+@app.route("/course",methods=['POST'])
+def createCourse():
+    data = request.get_json()
+    json = myControllerCourse.create(data)
+    return jsonify(json)
+
+@app.route("/course/<string:id>",methods=['GET'])
+def getCourse(id):
+    json=myControllerCourse.show(id)
+    return jsonify(json)
+
+@app.route("/course/<string:id>",methods=['PUT'])
+def updateCourse(id):
+    data = request.get_json()
+    json=myControllerCourse.update(id,data)
+    return jsonify(json)
+
+@app.route("/course/<string:id>",methods=['DELETE'])
+def deleteCourse(id):
+    json=myControllerCourse.delete(id)
+    return jsonify(json)
+############################################################################################
+
+############################# Rutas Departamentos-Materias #################################
+@app.route("/course/<string:id>/departamento/<string:idDepartment>",methods=['PUT'])
+def asignarDepartamentoAMateria(id,idDepartment):
+    json = myControllerCourse.assignmentDepartment(id,idDepartment)
+    return jsonify(json)
+############################################################################################
 
 def loadFileConfig():
     with open('config.json') as f:
