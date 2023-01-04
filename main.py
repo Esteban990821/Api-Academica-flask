@@ -5,18 +5,29 @@ from flask import request
 from flask_cors import CORS
 import json
 from waitress import serve
-from Controllers.StudentController import StudentController
-from Controllers.CourseController import CourseController
-from Controllers.DepartmentController import DepartmentController
-from Controllers.InscriptionController import InscriptionController
+#Se importan los controladores si las rutas se encuentran en el archivo main 
+#from Controllers.CourseController import CourseController
+#from Controllers.DepartmentController import DepartmentController
+#from Controllers.InscriptionController import InscriptionController
+#from Controllers.StudentController import StudentController
+
+
+#importar los archivos de rutas
+from routes.RoutesStudent import *
+from routes.RoutesDepartment import *
+from routes.RoutesCourse import *
+from routes.RoutesInscription import *
+
 
 app = Flask(__name__)
 cors = CORS(app)
 
-myControllerStudents = StudentController()
-myControllerCourse = CourseController()
-myControllerDepartment = DepartmentController()
-myControllerInscription = InscriptionController()
+#se crea una instancia de los controladores
+#myControllerCourse = CourseController()
+#myControllerDepartment = DepartmentController()
+#myControllerInscription = InscriptionController()
+#myControllerStudents = StudentController()
+
 
 @app.route("/",methods=['GET'])
 def test():
@@ -25,144 +36,42 @@ def test():
     return jsonify(json)
 
 #################################### Rutas Estudiantes #####################################
-@app.route("/students",methods=['GET'])
-def getEstudiantes():
-    json = myControllerStudents.index()
-    return jsonify(json)
-
-@app.route("/students",methods=['POST'])
-def crearEstudiante():
-    data = request.get_json()
-    json = myControllerStudents.create(data)
-    return jsonify(json)
-
-@app.route("/students/<string:id>",methods=['GET'])
-def getEstudiante(id):
-    json=myControllerStudents.show(id)
-    return jsonify(json)
-#leer configuracion del puerto y url
-
-@app.route("/students/<string:id>",methods=['PUT'])
-def modificarEstudiante(id):
-    data = request.get_json()
-    json=myControllerStudents.update(id,data)
-    return jsonify(json)
-
-@app.route("/students/<string:id>",methods=['DELETE'])
-def eliminarEstudiante(id):
-    json=myControllerStudents.delete(id)
-    return jsonify(json)
+app.register_blueprint(routeGetStudents)#libreria Blueprint para comunicar rutas de un archivo a otro
+app.register_blueprint(routeCreateStudent)
+app.register_blueprint(routeGetStudent)
+app.register_blueprint(routeUpdateStudent)
+app.register_blueprint(routeDeleteStudent)
 ############################################################################################
 
 ############################# Rutas Departamentos ##########################################
-@app.route("/department",methods=['GET'])
-def getDepartments():
-    json = myControllerDepartment.index()
-    return jsonify(json)
-
-@app.route("/department",methods=['POST'])
-def createDepartment():
-    data = request.get_json()
-    json = myControllerDepartment.create(data)
-    return jsonify(json)
-
-@app.route("/department/<string:id>",methods=['GET'])
-def getDepartment(id):
-    json=myControllerDepartment.show(id)
-    return jsonify(json)
-
-@app.route("/department/<string:id>",methods=['PUT'])
-def updateDepartment(id):
-    data = request.get_json()
-    json=myControllerDepartment.update(id,data)
-    return jsonify(json)
-
-@app.route("/department/<string:id>",methods=['DELETE'])
-def deleteDepartment(id):
-    json=myControllerDepartment.delete(id)
-    return jsonify(json)
+app.register_blueprint(routeGetDepartments)
+app.register_blueprint(routeCreateDepartment)
+app.register_blueprint(routeGetDepartment)
+app.register_blueprint(routeUpdateDepartment)
+app.register_blueprint(routeDeleteDepartment)
 ############################################################################################
 
 ####################################### Rutas Materias #####################################
-@app.route("/course",methods=['GET'])
-def getCourses():
-    json = myControllerCourse.index()
-    return jsonify(json)
-
-@app.route("/course",methods=['POST'])
-def createCourse():
-    data = request.get_json()
-    json = myControllerCourse.create(data)
-    return jsonify(json)
-
-@app.route("/course/<string:id>",methods=['GET'])
-def getCourse(id):
-    json=myControllerCourse.show(id)
-    return jsonify(json)
-
-@app.route("/course/<string:id>",methods=['PUT'])
-def updateCourse(id):
-    data = request.get_json()
-    json=myControllerCourse.update(id,data)
-    return jsonify(json)
-
-@app.route("/course/<string:id>",methods=['DELETE'])
-def deleteCourse(id):
-    json=myControllerCourse.delete(id)
-    return jsonify(json)
+app.register_blueprint(routeGetCourses)
+app.register_blueprint(routeCreateCourse)
+app.register_blueprint(routeGetCourse)
+app.register_blueprint(routeUpdateCourse)
+app.register_blueprint(routeDeleteCourse)
 ############################################################################################
 
-############################# Rutas Departamentos-Materias #################################
-@app.route("/course/<string:id>/departamento/<string:idDepartment>",methods=['PUT'])
-def asignarDepartamentoAMateria(id,idDepartment):
-    json = myControllerCourse.assignmentDepartment(id,idDepartment)
-    return jsonify(json)
+############################# Rutas Departamentos-Materias [1:n] ###########################
+app.register_blueprint(routeAssignDepartmentToCourse)
 ############################################################################################
 
-############################# Rutas Inscripciones relacion [n:n] #################################
-@app.route("/inscripciones",methods=['GET'])
-def getInscriptions():
-    json=myControllerInscription.index()
-    return jsonify(json)
-
-@app.route("/inscripcion/<string:id>",methods=['GET'])
-def getInscription(id):
-    json=myControllerInscription.show(id)
-    return jsonify(json)
-
-@app.route("/inscripcion/estudiante/<string:id_estudiante>/materia/<string:id_materia>",methods=['POST'])
-def createInscription(id_estudiante,id_materia):
-    data = request.get_json()
-    json=myControllerInscription.create(data,id_estudiante,id_materia)
-    return jsonify(json)
-
-@app.route("/inscripciones/<string:id_inscripcion>/estudiante/<string:id_estudiante>/materia/<string:id_materia>",methods=['PUT'])
-def updateInscripcion(id_inscripcion,id_estudiante,id_materia):
-    data = request.get_json()
-    json=myControllerInscription.update(id_inscripcion,data,id_estudiante,id_materia)
-    return jsonify(json)
-
-@app.route("/inscripcion/<string:id>",methods=['DELETE'])
-def deleteInscription(id):
-    json=myControllerInscription.delete(id)
-    return jsonify(json)
-
-@app.route("/inscripcion/materias/<string:idMaterias>",methods=['GET'])
-def getListInscribedInCourse(idMaterias):
-    json=myControllerInscription.listInscribedInCourse(idMaterias)
-    return jsonify(json)
-
-@app.route("/inscripcion/nota_mayor_por_curso",methods=['GET'])
-def getGreaterValue():
-    json=myControllerInscription.greaterValueForCourse()
-    return jsonify(json)
-
-@app.route("/inscripcion/promedio_por_materia/<string:idMaterias>",methods=['GET'])
-def getAVGCourse(idMaterias):
-    json=myControllerInscription.AvgCourse(idMaterias)
-    return jsonify(json)
-
-
+############################# Rutas Inscripciones relacion [n:n] ###########################
+app.register_blueprint(routeGetInscriptions)
+app.register_blueprint(routeGetInscription)
+app.register_blueprint(routeCreateInscription)
+app.register_blueprint(routeUpdateInscripcion)
+app.register_blueprint(routeDeleteInscription)
+app.register_blueprint(routeGetListInscribedInCourse)
+app.register_blueprint(routeGetGreaterValue)
+app.register_blueprint(routeGetAVGCourse)
 ############################################################################################
 
 def loadFileConfig():
