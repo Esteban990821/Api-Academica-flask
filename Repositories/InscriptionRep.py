@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 
 class InscriptionRep(InterfaceRep[Inscription]):
     def getListInscribedInCourse(self,idMateria):
-        Query = {'materia.$id': ObjectId("63b369a6d571c17243d1088c")}
+        Query = {'materia.$id': ObjectId(idMateria)}
         return self.query(Query)
 
     def getGreaterValueForCourse(self):
